@@ -1,24 +1,10 @@
 def readFile(file_name, sheet_name)
-    config = {
-        'start' => [],
-        'commands' => [],
-    }
+    config = {}
     book = Spreadsheet.open(file_name)
     sheet = book.worksheet(sheet_name)
     sheet.each do |row|
       break if row[0].nil?
-      if row[0] == '程序初始位置'
-        config['start'] = [row[1].to_i, row[2].to_i]
-        next
-      end
-      next if row[0] == '指令'
-      config['commands'].push({
-        'type' => row[0],
-        'id' => row[1].to_i,
-        'x' => row[2].to_i,
-        'y' => row[3].to_i,
-        'wait' => row[5].to_i,
-      })
+      config[row[1]] = [row[2].to_i, row[3].to_i]
     end
     config
 end
@@ -31,15 +17,15 @@ end
 
 def goto(x,y)
     # 地图
-    mouse_move(260,750)
+    mouse_move($config['地图'][0], $config['地图'][1])
     sleep 2
     left_click
 
     #输入坐标
-    mouse_move(1170,760)
+    mouse_move($config['输入坐标x'][0], $config['输入坐标x'][1])
     sleep 2
     left_click
-
+    
     #输入坐标
     4.times do
         key_stroke(0x08)
@@ -53,7 +39,7 @@ def goto(x,y)
     left_click
 
     #输入坐标
-    mouse_move(1300,760)
+    mouse_move($config['输入坐标y'][0], $config['输入坐标y'][1])
     sleep 2
     left_click
 
@@ -70,26 +56,31 @@ def goto(x,y)
     left_click
 
     #输入坐标
-    mouse_move(1430,760)
+    mouse_move($config['点击移动'][0], $config['点击移动'][1])
     sleep 2
     left_click
 end
 
-def take_place(x, y)
+def take_place(x, y, id)
     goto(x, y)
 
     #点击占领
-    mouse_move(1040,395)
+    mouse_move($config['点击占领'][0], $config['点击占领'][1])
     sleep 2
     left_click
     
-    #选择部队
-    mouse_move(806,840)
+    if id == 0 then
+        #选择部队
+        mouse_move($config['选择最中间部队'][0], $config['选择最中间部队'][1])
+    else
+        mouse_move($config['选择最中间部队'][0] + (id - 3)*255 , $config['选择最中间部队'][1])
+    end
+
     sleep 2
     left_click
     
     #点击确认
-    mouse_move(1190,700)
+    mouse_move($config['占领确认'][0], $config['占领确认'][1])
     sleep 2
     left_click
 end

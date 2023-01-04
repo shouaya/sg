@@ -1,0 +1,17 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    auto_click (0.5.9)
+    ruby-ole (1.2.12.2)
+    spreadsheet (1.3.0)
+      ruby-ole
+
+PLATFORMS
+  x64-mingw32
+
+DEPENDENCIES
+  auto_click
+  spreadsheet
+
+BUNDLED WITH
+   1.17.2

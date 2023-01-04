@@ -1,4 +1,5 @@
 ## 1. 安装ruby
+  https://rubyinstaller.org/downloads/
 
 ## 2. 打开三国志PC版(原始窗口大小位置也不要改变)
 

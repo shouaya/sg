@@ -15,14 +15,14 @@ func move(x, y string){
     intX := toI(getCell("config", "C3"))
     intY := toI(getCell("config", "D3"))
     robotgo.Move(intX, intY)
-    robotgo.Click("left", true)
+    robotgo.Click("left", false)
     robotgo.Sleep(1)
 
     //输入坐标x
     intX = toI(getCell("config", "C4"))
     intY = toI(getCell("config", "D4"))
     robotgo.Move(intX, intY)
-    robotgo.Click("left", true)
+    robotgo.Click("left", false)
     for i := 0; i < 5; i++ {
         robotgo.KeyTap("backspace")
     }
@@ -33,7 +33,7 @@ func move(x, y string){
     intX = toI(getCell("config", "C5"))
     intY = toI(getCell("config", "D5"))
     robotgo.Move(intX, intY)
-    robotgo.Click("left", true)
+    robotgo.Click("left", false)
     for i := 0; i < 5; i++ {
         robotgo.KeyTap("backspace")
     }
@@ -44,7 +44,7 @@ func move(x, y string){
     intX = toI(getCell("config", "C6"))
     intY = toI(getCell("config", "D6"))
     robotgo.Move(intX, intY)
-    robotgo.Click("left", true)
+    robotgo.Click("left", false)
     robotgo.Sleep(1)
 }
 
@@ -56,7 +56,7 @@ func take(command []string){
     intX := toI(getCell("config", "C7"))
     intY := toI(getCell("config", "D7"))
     robotgo.Move(intX, intY)
-    robotgo.Click("left", true)
+    robotgo.Click("left", false)
     robotgo.Sleep(1)
     
     //选择部队
@@ -67,14 +67,14 @@ func take(command []string){
         intX = toI(getCell("config", "C8")) + (id - 3)*255
     }
     robotgo.Move(intX, intY)
-    robotgo.Click("left", true)
+    robotgo.Click("left", false)
     robotgo.Sleep(1)
     
     //点击确认
     intX = toI(getCell("config", "C9"))
     intY = toI(getCell("config", "D9"))
     robotgo.Move(intX, intY)
-    robotgo.Click("left", true)
+    robotgo.Click("left", false)
     robotgo.Sleep(toI(command[5]))
 }
 
@@ -83,35 +83,52 @@ type Point struct {
     Y int `json:"y"`
 }
 
-func start() {
+func findGameIcon() {
     //get game start xy
     img := robotgo.CaptureImg()
     imgo.Save("start.png", img)
-    startxy := Point{}
-    fileUpload("http://localhost:8080/start", "start.png", &startxy)
-    robotgo.Move(startxy.X, startxy.Y)
-    robotgo.Click("left", true)
+    xy := Point{}
+    fileUpload("http://localhost:8080/start", "start.png", &xy)
+    robotgo.Move(xy.X, xy.Y)
+    robotgo.Click("left", false)
     robotgo.Sleep(2)
 }
 
-func adjust() {
+func adjustPad() {
     //get game start xy
     img := robotgo.CaptureImg()
     imgo.Save("adjust.png", img)
-    adjustxy := Point{}
-    fileUpload("http://localhost:8080/adjust", "adjust.png", &adjustxy)
-    fmt.Println(adjustxy)
-    pad_x = adjustxy.X
-    pad_y = adjustxy.Y
+    xy := Point{}
+    fileUpload("http://localhost:8080/adjust", "adjust.png", &xy)
+    pad_x = xy.X
+    pad_y = xy.Y
 }
 
+func initWindow() {
+    //find back button
+    img := robotgo.CaptureImg(pad_x, pad_y, 1280, 750)
+    imgo.Save("game.png", img)
+    xy := Point{}
+    fileUpload("http://localhost:8080/back", "game.png", &xy)
+
+    if((xy.X > 1100 && xy.X < 1200)|| (xy.Y > 30 && xy.Y < 60)){
+        robotgo.Move(xy.X + pad_x + 10, xy.Y + pad_y + 10)
+        robotgo.Click("left", false)
+        robotgo.Sleep(2)
+    }
+}
 
 func run() {
-    // 程序初始位置
-    start()
-    adjust()
-    os.Exit(3)
+    fmt.Println("获取game图标位置并点开")
+    findGameIcon()
 
+    fmt.Println("获取game窗口与屏幕间距")
+    adjustPad()
+
+    fmt.Println("初期话游戏界面")
+    initWindow()
+    os.Exit(3)
+    //1280 750
     // 获取所有指令
     commands := getRows("command")
     for _, command := range commands {

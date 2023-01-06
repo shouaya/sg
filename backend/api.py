@@ -33,6 +33,15 @@ def adjust():
     response.content_type = 'application/json'
     return json.dumps({ "x": point[0], "y": point[1] })
 
+@route('/back' , method='POST')
+def back():
+    image = request.files.get('file')
+    save_path = os.path.join('/tmp/', time.strftime("%Y%m%d-%H%M%S-") + image.filename)
+    image.save(save_path)
+    point = findImage(save_path, 'back_icon.png', False)
+    response.content_type = 'application/json'
+    return json.dumps({ "x": point[0], "y": point[1] })
+
 def findImage(bigImage, smallImage, padding):
     image= cv2.imread(bigImage)
     gray= cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)

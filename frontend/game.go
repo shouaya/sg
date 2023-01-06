@@ -7,6 +7,9 @@ import (
     "github.com/vcaesar/imgo"
 )
 
+var pad_x int
+var pad_y int
+
 func move(x, y string){
     //打开地图
     intX := toI(getCell("config", "C3"))
@@ -89,24 +92,25 @@ func start() {
     robotgo.Move(startxy.X, startxy.Y)
     robotgo.Click("left", true)
     robotgo.Sleep(2)
-    os.Exit(3)
+}
+
+func adjust() {
+    //get game start xy
+    img := robotgo.CaptureImg()
+    imgo.Save("adjust.png", img)
+    adjustxy := Point{}
+    fileUpload("http://localhost:8080/adjust", "adjust.png", &adjustxy)
+    fmt.Println(adjustxy)
+    pad_x = adjustxy.X
+    pad_y = adjustxy.Y
 }
 
 
 func run() {
     // 程序初始位置
     start()
-    // sx, sy := robotgo.GetScreenSize()
-    // fmt.Println("get screen size: ", sx, sy)
-
-    // img := robotgo.CaptureImg()
-    // imgo.Save("test.png", img)
-    // os.Exit(3)
-    
-    // intStartX := toI(getCell("config", "C2"))
-    // intStartY := toI(getCell("config", "D2"))
-    // start(intStartX, intStartY)
-    // robotgo.Sleep(1)
+    adjust()
+    os.Exit(3)
 
     // 获取所有指令
     commands := getRows("command")

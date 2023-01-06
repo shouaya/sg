@@ -1,0 +1,20 @@
+version: "3"
+
+networks:
+  backend:
+    driver: bridge
+
+services:
+  ### app ##########################################
+  opencv:
+    build:
+      context: .
+    volumes:
+      - ./:/work
+    working_dir: /work
+    command: >
+      bash -c "tail -f /work/test.py"
+    ports:
+      - "8080:8080"
+    networks:
+      - backend

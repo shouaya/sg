@@ -2,7 +2,9 @@ package main
 
 import (
     "fmt"
+    "os"
     "github.com/go-vgo/robotgo"
+    "github.com/vcaesar/imgo"
 )
 
 func move(x, y string){
@@ -73,17 +75,38 @@ func take(command []string){
     robotgo.Sleep(toI(command[5]))
 }
 
-func start(x, y int) {
-    robotgo.Move(x, y)
-    robotgo.Click("left", true)
+type Point struct {
+    X int `json:"x"`
+    Y int `json:"y"`
 }
+
+func start() {
+    //get game start xy
+    img := robotgo.CaptureImg()
+    imgo.Save("start.png", img)
+    startxy := Point{}
+    fileUpload("http://localhost:8080/start", "start.png", &startxy)
+    robotgo.Move(startxy.X, startxy.Y)
+    robotgo.Click("left", true)
+    robotgo.Sleep(2)
+    os.Exit(3)
+}
+
 
 func run() {
     // 程序初始位置
-    intStartX := toI(getCell("config", "C2"))
-    intStartY := toI(getCell("config", "D2"))
-    start(intStartX, intStartY)
-    robotgo.Sleep(1)
+    start()
+    // sx, sy := robotgo.GetScreenSize()
+    // fmt.Println("get screen size: ", sx, sy)
+
+    // img := robotgo.CaptureImg()
+    // imgo.Save("test.png", img)
+    // os.Exit(3)
+    
+    // intStartX := toI(getCell("config", "C2"))
+    // intStartY := toI(getCell("config", "D2"))
+    // start(intStartX, intStartY)
+    // robotgo.Sleep(1)
 
     // 获取所有指令
     commands := getRows("command")

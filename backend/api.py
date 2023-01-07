@@ -6,21 +6,13 @@ import numpy as np
 import json
 import math
 
-@route('/hello/<name>')
-def index(name):
-    return template('<b>Hello {{name}}</b>!', name=name)
-
-
-@route('/version/latest')
-def version():
-    return '0.1'
-
 @route('/start' , method='POST')
 def start():
     image = request.files.get('file')
     save_path = os.path.join('/tmp/', time.strftime("%Y%m%d-%H%M%S-") + image.filename)
     image.save(save_path)
     point = findImage(save_path, 'start_icon.png', True)
+    os.remove(save_path)
     response.content_type = 'application/json'
     return json.dumps({ "x": point[0], "y": point[1] })
 
@@ -30,6 +22,7 @@ def adjust():
     save_path = os.path.join('/tmp/', time.strftime("%Y%m%d-%H%M%S-") + image.filename)
     image.save(save_path)
     point = findImage(save_path, 'top_icon.png', False)
+    os.remove(save_path)
     response.content_type = 'application/json'
     return json.dumps({ "x": point[0], "y": point[1] })
 
@@ -39,6 +32,7 @@ def back():
     save_path = os.path.join('/tmp/', time.strftime("%Y%m%d-%H%M%S-") + image.filename)
     image.save(save_path)
     point = findImage(save_path, 'back_icon.png', False)
+    os.remove(save_path)
     response.content_type = 'application/json'
     return json.dumps({ "x": point[0], "y": point[1] })
 

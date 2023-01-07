@@ -9,6 +9,7 @@ import (
 
 var pad_x int
 var pad_y int
+var api_url string
 
 func move(x, y string){
     //打开地图
@@ -88,7 +89,15 @@ func findGameIcon() {
     img := robotgo.CaptureImg()
     imgo.Save("start.png", img)
     xy := Point{}
-    fileUpload("http://localhost:8080/start", "start.png", &xy)
+    fileUpload(api_url + "start", "start.png", &xy)
+
+    sx, sy := robotgo.GetScreenSize()
+    fmt.Println("屏幕分辨利率: ", sx, sy)
+    if(xy.Y < sy - 30){
+        robotgo.Alert("error", "please open the game")
+        os.Exit(3)
+    }
+    
     robotgo.Move(xy.X, xy.Y)
     robotgo.Click("left", false)
     robotgo.Sleep(2)
@@ -99,7 +108,7 @@ func adjustPad() {
     img := robotgo.CaptureImg()
     imgo.Save("adjust.png", img)
     xy := Point{}
-    fileUpload("http://localhost:8080/adjust", "adjust.png", &xy)
+    fileUpload(api_url + "adjust", "adjust.png", &xy)
     pad_x = xy.X
     pad_y = xy.Y
 }
@@ -109,7 +118,7 @@ func initWindow() {
     img := robotgo.CaptureImg(pad_x, pad_y, 1280, 750)
     imgo.Save("game.png", img)
     xy := Point{}
-    fileUpload("http://localhost:8080/back", "game.png", &xy)
+    fileUpload(api_url + "back", "game.png", &xy)
 
     if((xy.X > 1100 && xy.X < 1200)|| (xy.Y > 30 && xy.Y < 60)){
         robotgo.Move(xy.X + pad_x + 10, xy.Y + pad_y + 10)
@@ -119,6 +128,9 @@ func initWindow() {
 }
 
 func run() {
+
+    api_url = "http://localhost:8080/"
+
     fmt.Println("获取game图标位置并点开")
     findGameIcon()
 

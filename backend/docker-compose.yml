@@ -13,7 +13,7 @@ services:
       - ./:/work
     working_dir: /work
     command: >
-      bash -c "tail -f /work/test.py"
+      bash -c "python api.py"
     ports:
       - "8080:8080"
     networks:

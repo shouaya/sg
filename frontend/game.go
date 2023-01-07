@@ -4,7 +4,6 @@ import (
     "fmt"
     "os"
     "github.com/go-vgo/robotgo"
-    "github.com/vcaesar/imgo"
 )
 
 var pad_x int
@@ -87,9 +86,10 @@ type Point struct {
 func findGameIcon() {
     //get game start xy
     img := robotgo.CaptureImg()
-    imgo.Save("start.png", img)
+    //imgo.Save("start.png", img)
+    robotgo.SaveJpeg(img, "start.jpeg", 10)
     xy := Point{}
-    fileUpload(api_url + "start", "start.png", &xy)
+    fileUpload(api_url + "start", "start.jpeg", &xy)
 
     sx, sy := robotgo.GetScreenSize()
     fmt.Println("屏幕分辨利率: ", sx, sy)
@@ -106,9 +106,11 @@ func findGameIcon() {
 func adjustPad() {
     //get game start xy
     img := robotgo.CaptureImg()
-    imgo.Save("adjust.png", img)
+    //imgo.Save("adjust.png", img)
+    robotgo.SaveJpeg(img, "adjust.jpeg", 10)
+
     xy := Point{}
-    fileUpload(api_url + "adjust", "adjust.png", &xy)
+    fileUpload(api_url + "adjust", "adjust.jpeg", &xy)
     pad_x = xy.X
     pad_y = xy.Y
 }
@@ -116,9 +118,10 @@ func adjustPad() {
 func initWindow() {
     //find back button
     img := robotgo.CaptureImg(pad_x, pad_y, 1280, 750)
-    imgo.Save("game.png", img)
+    //imgo.Save("game.png", img)
+    robotgo.SaveJpeg(img, "game.jpeg", 10)
     xy := Point{}
-    fileUpload(api_url + "back", "game.png", &xy)
+    fileUpload(api_url + "back", "game.jpeg", &xy)
 
     if((xy.X > 1100 && xy.X < 1200)|| (xy.Y > 30 && xy.Y < 60)){
         robotgo.Move(xy.X + pad_x + 10, xy.Y + pad_y + 10)
@@ -129,6 +132,7 @@ func initWindow() {
 
 func run() {
 
+    //api_url = "https://sg.weget.jp/"
     api_url = "http://localhost:8080/"
 
     fmt.Println("获取game图标位置并点开")

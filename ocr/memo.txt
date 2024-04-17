@@ -1,0 +1,19 @@
+https://cloud.tencent.com/developer/article/2369756
+
+docker run -it --name ocr -v //d/git/sg/ocr:/ocr -w /ocr python:3 bash
+
+apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+apt -y install libopencv-dev
+
+python -m pip install paddlepaddle -i https://pypi.tuna.tsinghua.edu.cn/simple
+pip install "paddleocr>=2.0.1"
+
+python test.py
+
+
+apt-get install tesseract-ocr
+apt-get install tesseract-ocr-jpn
+
+tesseract test.png out -l jpn
+https://qiita.com/ku_a_i/items/93fdbd75edacb34ec610
+pip install pyocr

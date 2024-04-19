@@ -2,7 +2,7 @@
   "name": "app",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.15.2",
+    "kurento-client": "^6.16.0",
     "socket.io": "^4.7.5"
   }
 }

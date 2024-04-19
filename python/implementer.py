@@ -1,5 +1,6 @@
 import asyncio
 import socketio
+import pyautogui
 
 sio = socketio.AsyncClient()
 
@@ -11,6 +12,14 @@ async def connect():
 @sio.on('chat message')
 async def on_message(data):
     print('message received with ', data)
+    if "e" in data:
+        if data['e'] == 'c':
+            print("click")
+            pyautogui.click(data['x'], data['y'])
+        else:
+            print("drag")
+            pyautogui.moveTo(data['fx'], data['fy'], duration = 0)
+            pyautogui.dragTo(data['tx'], data['ty'], duration = 1)
 
 @sio.event
 async def disconnect():

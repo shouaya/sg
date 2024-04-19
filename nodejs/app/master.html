@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 13px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: 0.5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+      $(function () {
+        var socket = io();
+        var latest_down = null;
+        $(window).mousedown(function(event){
+            latest_down = {x: event.offsetX, y: event.offsetY};
+            //console.log('mousedown', {x: event.offsetX, y: event.offsetY});
+        });
+
+        $(window).mouseup(function(event){
+            //console.log('mouseup', {x: event.offsetX, y: event.offsetY});
+            if((event.offsetX != latest_down.x)  &&(event.offsetY != latest_down.y)){
+                console.log('move', {x: event.offsetX - latest_down.x, y: event.offsetY - latest_down.y});
+                socket.emit('chat message', {e:'m', fx: latest_down.x, tx:event.offsetX, fy: latest_down.y, ty: event.offsetY});
+            }else{
+                console.log('click', {x: event.offsetX, y: event.offsetY});
+                socket.emit('chat message', {e:'c', x: event.offsetX, y: event.offsetY});
+            }
+        });
+        socket.on('chat message', function(msg){
+          console.log('receive', msg);
+          $('#messages').append($('<li>').text(JSON.stringify(msg)));
+        });
+      });
+    </script>
+  </body>
+</html>
